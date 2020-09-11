@@ -1,0 +1,81 @@
+---
+title: "Final Project"
+author: "Krystina Moses"
+date: "May 6, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(caret)
+library(ggplot2)
+```
+
+#Load the data
+```{r}
+diabetes <- read.csv('diabetes.csv')
+```
+
+#View the Diabetes dataset, first 6 rows and structure of the dataset after removing any NA values
+```{r}
+diabetes <- na.omit(diabetes)
+
+head(diabetes)
+str(diabetes)
+```
+
+#Understand variable relation with correlation matrix
+```{r}
+corDiabetes<-cor(diabetes[1:9], use="complete.obs", method="pearson")
+round(corDiabetes, 2)
+```
+
+#Based on the correlation matrix, we can see the Glucose has the highest correlation. This shows that if someone has a higher glucose level, their chance of diabetes goes up. BMI is the next highest which shows that BMI is also a contributing factor. 
+
+#Barplot showing diabetes vs non diabetes
+```{r}
+ggplot(diabetes, aes(x=Outcome, y=Age, fill=Outcome)) + 
+       geom_bar(stat="identity", width= 1) + theme_minimal() + ggtitle("Age") + xlab("Outcome") + ylab("Age")
+```
+
+
+
+#Split into train and test datasets, Diabetes
+#View the dimensions of the train and test datasets to verfiy it was split at approximately the right percentage
+```{r}
+set.seed(1000)
+trainIndex <- createDataPartition(diabetes$Outcome, p = .8, 
+                                  list = FALSE, 
+                                  times = 1)
+diabetesTrain <- diabetes[ trainIndex,]
+diabetesTest  <- diabetes[-trainIndex,]
+
+dim(diabetesTest) #Test
+dim(diabetesTrain) #Train
+```
+
+#
+```{r}
+
+```
+
+#
+
+model.lr1 <- lm(Outcome ~ ., diabetesTrain)
+model.lr1
+summary(model.lr1)
+RMSE(model.lr1$fitted.values, Outcome)
+
+aic <- AIC(model.lr1)
+bic <-BIC(model.lr1)
+
+pred.model.lr1 <- predict(model.lr1, newdata = diabetesTest) # validation predictions
+meanPred <- mean((diabetesTest$Outcome - pred.model.lr1)^2) # mean prediction error
+stdError <- sd((diabetesTest$Outcome - pred.model.lr1)^2)/length(diabetesTest$Outcome) # std error
+
+modelMetrics <- data.frame( "Model" = character(), "adjRsq" = integer(),  "AIC"= integer(), "BIC"= integer(), "Mean Prediction Error"= integer(), "Standard Error"= integer(), stringsAsFactors=FALSE)
+
+modelMetrics[nrow(modelMetrics) + 1, ] <- c( "model.lr1", 0.279, aic, bic, meanPred, stdError)
+modelMetrics
+
+model.fit <- lm(Outcome ~ Glucose, data = diabetes)
+RMSE(model.fit$fitted.values, Outcome)
