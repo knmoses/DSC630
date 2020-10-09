@@ -5,4 +5,4 @@ Predictive Analytics
 This project uses models to determine the outcome of if a person will develop diabetes based on certain variables.
 
 ## Programming Language
-Python, Jupyter Notebook
+R
