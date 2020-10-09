@@ -54,11 +54,6 @@ dim(diabetesTrain) #Train
 ```
 
 #
-```{r}
-
-```
-
-#
 
 model.lr1 <- lm(Outcome ~ ., diabetesTrain)
 model.lr1
