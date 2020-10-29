@@ -9,3 +9,8 @@ R
 
 ## Data
 From Kaggle.com, included in the repository.
+
+## License
+MIT License
+
+Copyright (c) 2020 Krystina Moses
